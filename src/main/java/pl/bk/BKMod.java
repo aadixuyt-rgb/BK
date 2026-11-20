@@ -19,6 +19,7 @@ public final class BKMod implements ClientModInitializer {
         while(BKModuleKeys.errorKiller.wasPressed())toggle("Error Killer");
         while(BKModuleKeys.knockback.wasPressed())toggle("Knockback Displacement");
         while(BKModuleKeys.playerEsp.wasPressed())toggle("Player ESP");
+        while(BKModuleKeys.nametags.wasPressed())toggle("Nametags");
         BKErrorKiller.tick(client);
         BKKnockbackDisplacement.tick(client);
     }
@@ -30,6 +31,7 @@ public final class BKMod implements ClientModInitializer {
             case "Error Killer"->BKConfig.data.errorKiller=!BKConfig.data.errorKiller;
             case "Knockback Displacement"->BKConfig.data.knockbackDisplacement=!BKConfig.data.knockbackDisplacement;
             case "Player ESP"->BKConfig.data.playerEsp=!BKConfig.data.playerEsp;
+            case "Nametags"->BKConfig.data.nametagsEnabled=!BKConfig.data.nametagsEnabled;
             default->{return;}
         } BKConfig.save();
     }
