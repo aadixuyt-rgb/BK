@@ -4,8 +4,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.Monster;
-import net.minecraft.entity.passive.PassiveEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Box;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,13 +24,15 @@ public abstract class HitboxMixin {
         if(entity.isInvisible() && !BKConfig.data.hitboxInvisibles) return;
         MinecraftClient mc=MinecraftClient.getInstance();
         if(entity instanceof PlayerEntity player) {
-            if(!BKConfig.data.hitboxPlayers) return;
             boolean friend=mc.player!=null && mc.player.isTeammate(player);
             if(friend && !BKConfig.data.hitboxFriends) return;
-            if(!BKConfig.data.hitboxNakedPlayers && hasArmor(player)) return;
-        } else if(living instanceof PassiveEntity) {
+            boolean naked=!hasArmor(player);
+            if(!BKConfig.data.hitboxPlayers && !BKConfig.data.hitboxNakedPlayers) return;
+            if(BKConfig.data.hitboxPlayers && !BKConfig.data.hitboxNakedPlayers && naked) return;
+            if(!BKConfig.data.hitboxPlayers && BKConfig.data.hitboxNakedPlayers && !naked) return;
+        } else if(living instanceof AnimalEntity) {
             if(!BKConfig.data.hitboxAnimals) return;
-        } else if(living instanceof Monster) {
+        } else if(living instanceof MobEntity) {
             if(!BKConfig.data.hitboxMobs) return;
         } else return;
         float size=BKConfig.data.hitboxScale;
