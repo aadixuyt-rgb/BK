@@ -16,13 +16,13 @@ public final class BKMod implements ClientModInitializer {
         if(BKModuleKeys.openGui.wasPressed() && client.currentScreen==null) client.setScreen(new BKClickGui());
         while(BKModuleKeys.noPush.wasPressed()) toggle("NoPush");
         while(BKModuleKeys.tracers.wasPressed()) toggle("Tracers");
-        while(BKModuleKeys.nametags.wasPressed()) toggle("Nametags");
+        while(BKModuleKeys.hitboxes.wasPressed()) toggle("Hitboxes");
     }
     public static boolean isEnabled(String module) {
         return switch(module) {
             case "NoPush" -> BKConfig.data.noPush;
             case "Tracers" -> BKConfig.data.tracers;
-            case "Nametags" -> BKConfig.data.nametagsEnabled;
+            case "Hitboxes" -> BKConfig.data.hitboxes;
             default -> false;
         };
     }
@@ -30,7 +30,7 @@ public final class BKMod implements ClientModInitializer {
         switch(module) {
             case "NoPush" -> BKConfig.data.noPush=!BKConfig.data.noPush;
             case "Tracers" -> BKConfig.data.tracers=!BKConfig.data.tracers;
-            case "Nametags" -> BKConfig.data.nametagsEnabled=!BKConfig.data.nametagsEnabled;
+            case "Hitboxes" -> BKConfig.data.hitboxes=!BKConfig.data.hitboxes;
             default -> { return; }
         }
         BKConfig.save();
