@@ -45,7 +45,7 @@ public final class BKClickGui extends Screen {
             y+=32;
         }
         addDrawableChild(button(left+14,top+PANEL_H-32,402,20,"Zapisz ustawienia",b->{
-            BKConfig.save(); ToastNotifications.show("Zapisano konfigurację BK");}));
+            BKConfig.save(); clearAndInit();}));
     }
 
     private void initSettings(int left,int top){
