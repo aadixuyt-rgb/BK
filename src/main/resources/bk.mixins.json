@@ -3,10 +3,6 @@
   "minVersion": "0.8",
   "package": "pl.bk.mixin",
   "compatibilityLevel": "JAVA_21",
-  "client": [
-    "LivingEntityMixin",
-    "PlayerEntityMixin",
-    "ClientPlayerEntityMixin"
-  ],
+  "client": ["LivingEntityMixin", "PlayerEntityMixin", "ClientPlayerEntityMixin", "HitboxMixin"],
   "injectors": { "defaultRequire": 1 }
 }
