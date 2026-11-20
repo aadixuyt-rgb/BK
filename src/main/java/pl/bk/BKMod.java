@@ -71,6 +71,15 @@ public final class BKMod implements ClientModInitializer {
                 client.world.addParticle(ParticleTypes.END_ROD, x, y, z, 0.0, 0.015, 0.0);
             }
         }
+        if (client.world != null) {
+            boolean chams = BKExtraModules.isEnabled("Chams");
+            for (var entity : client.world.getPlayers()) {
+                if (entity != client.player) {
+                    // Client-side glowing outline; restore the flag when Chams is disabled.
+                    entity.setGlowing(chams);
+                }
+            }
+        }
         BKKnockbackDisplacement.tick(client);
     }
     private static double parseSetting(String value, double fallback, double min, double max) {
