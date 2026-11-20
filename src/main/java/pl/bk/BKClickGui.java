@@ -12,8 +12,8 @@ import java.util.List;
 /** Standalone ClickGUI with module toggles, per-module bind capture and editable settings. */
 public final class BKClickGui extends Screen {
     private static final int PANEL_W=430, PANEL_H=340;
-    private static final List<String> MODULES=List.of("NoPush","Tracers","Hitboxes","Error Killer",
-            "Knockback Displacement","Player ESP","Nametags");
+    private static final List<String> CATEGORIES=List.of("Visuals","Combat","Player","Misc","Existing");
+    private String category="Visuals";
     private String selectedModule=null;
     private String waitingForBind=null;
     private int scroll;
@@ -24,7 +24,7 @@ public final class BKClickGui extends Screen {
         clearChildren();
         int left=width/2-PANEL_W/2;
         int top=height/2-PANEL_H/2;
-        addDrawableChild(button(left+14,top+35,90,20,"Moduły",b->{selectedModule=null;scroll=0;clearAndInit();}));
+        addDrawableChild(button(left+14,top+35,142,20,"Kategoria: "+category+"  >",b->{int i=(CATEGORIES.indexOf(category)+1)%CATEGORIES.size();category=CATEGORIES.get(i);selectedModule=null;scroll=0;clearAndInit();}));
         if(selectedModule!=null) addDrawableChild(button(left+110,top+35,90,20,"← Wróć",b->{selectedModule=null;clearAndInit();}));
         addDrawableChild(button(left+PANEL_W-104,top+35,90,20,"Zamknij",b->close()));
         if(selectedModule==null) initModules(left,top); else initSettings(left,top);
@@ -32,7 +32,7 @@ public final class BKClickGui extends Screen {
 
     private void initModules(int left,int top){
         int y=top+68-scroll;
-        for(String module:MODULES){
+        for(String module:modulesForCategory()){
             final String name=module;
             addDrawableChild(button(left+14,y,142,24,stateText(name),b->{
                 BKMod.toggle(name); clearAndInit();
@@ -113,14 +113,13 @@ public final class BKClickGui extends Screen {
     private ButtonWidget button(int x,int y,int w,int h,String label,ButtonWidget.PressAction action){
         return ButtonWidget.builder(Text.literal(label),action).dimensions(x,y,w,h).build();
     }
+    private List<String> modulesForCategory(){
+        if(category.equals("Existing")) return List.of("NoPush","Tracers","Hitboxes","Error Killer",
+                "Knockback Displacement","Player ESP","Nametags");
+        return BKModuleCatalog.EXTRA.stream().filter(e -> e.category().equals(category)).map(BKModuleCatalog.Entry::name).toList();
+    }
     private String stateText(String module){
-        boolean on=switch(module){
-            case "NoPush"->BKConfig.data.noPush; case "Tracers"->BKConfig.data.tracers;
-            case "Hitboxes"->BKConfig.data.hitboxes; case "Error Killer"->BKConfig.data.errorKiller;
-            case "Knockback Displacement"->BKConfig.data.knockbackDisplacement;
-            case "Player ESP"->BKConfig.data.playerEsp; case "Nametags"->BKConfig.data.nametagsEnabled; default->false;
-        };
-        return module+"  ["+(on?"WŁ.":"WYŁ.")+"]";
+        return module+"  ["+(BKMod.isEnabled(module)?"WŁ.":"WYŁ.")+"]";
     }
 
     @Override public boolean keyPressed(int keyCode,int scanCode,int modifiers){
@@ -139,7 +138,7 @@ public final class BKClickGui extends Screen {
         ctx.fill(left,top,left+PANEL_W,top+PANEL_H,0xF0161B26);
         ctx.fill(left,top,left+PANEL_W,top+2,0xFF9A5DFF);
         ctx.drawTextWithShadow(textRenderer,Text.literal("BK CLIENT  •  CLICKGUI"),left+14,top+13,0xFFFFFFFF);
-        ctx.drawTextWithShadow(textRenderer,Text.literal(selectedModule==null?"Każdy moduł ma osobny bind i ustawienia.":(waitingForBind==null?"Kliknij bind, aby go zmienić.":"Naciśnij nowy klawisz…")),left+14,top+22,0xFFADB7C8);
+        ctx.drawTextWithShadow(textRenderer,Text.literal(selectedModule==null?"Wybierz kategorię; każdy moduł ma osobny bind.":(waitingForBind==null?"Kliknij bind, aby go zmienić.":"Naciśnij nowy klawisz…")),left+14,top+22,0xFFADB7C8);
         super.render(ctx,mouseX,mouseY,delta);
     }
     @Override public boolean shouldPause(){return false;}
