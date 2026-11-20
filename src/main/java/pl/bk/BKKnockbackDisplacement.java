@@ -2,6 +2,7 @@ package pl.bk;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -14,18 +15,19 @@ import net.minecraft.util.Hand;
 public final class BKKnockbackDisplacement {
     private static LivingEntity pending;
     private static ClientPlayerEntity attacker;
-    private static net.minecraft.client.world.ClientWorld pendingWorld;
+    private static ClientWorld pendingWorld;
     private static int pendingAge;
     private static float forcedYaw;
     private static boolean replaying;
     private BKKnockbackDisplacement(){}
 
     public static boolean deferAttack(ClientPlayerEntity player,Entity target){
-        if(!BKConfig.data.knockbackDisplacement||replaying||player==null||
+        MinecraftClient mc=MinecraftClient.getInstance();
+        if(!BKConfig.data.knockbackDisplacement||replaying||player==null||mc.world==null||
                 !(target instanceof LivingEntity living)||!living.isAlive())return false;
         if(BKConfig.data.knockbackSprintOnly&&!player.isSprinting())return false;
         if(pending!=null)return true;
-        attacker=player; pending=living; pendingWorld=player.clientWorld; pendingAge=player.age;
+        attacker=player; pending=living; pendingWorld=mc.world; pendingAge=player.age;
         if(BKConfig.data.knockbackDynamic){
             double dx=player.getX()-target.getX();
             double dz=player.getZ()-target.getZ();
@@ -49,19 +51,12 @@ public final class BKKnockbackDisplacement {
         boolean canRedirect=!BKConfig.data.knockbackSprintOnly||player.isSprinting();
         replaying=true;
         try{
-            if(canRedirect){
-                player.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(
-                        forcedYaw,originalPitch,player.isOnGround(),player.horizontalCollision));
-            }
+            if(canRedirect) player.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(
+                    forcedYaw,originalPitch,player.isOnGround(),player.horizontalCollision));
             mc.interactionManager.attackEntity(player,pending);
             player.swingHand(Hand.MAIN_HAND);
-            if(canRedirect&&!BKConfig.data.knockbackHideRotation){
-                player.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(
-                        originalYaw,originalPitch,player.isOnGround(),player.horizontalCollision));
-            }else if(canRedirect){
-                player.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(
-                        originalYaw,originalPitch,player.isOnGround(),player.horizontalCollision));
-            }
+            if(canRedirect) player.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(
+                    originalYaw,originalPitch,player.isOnGround(),player.horizontalCollision));
         }finally{
             replaying=false;clear();
         }
