@@ -5,13 +5,13 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
 public final class BKModuleKeys {
-    public static KeyBinding openGui,noPush,tracers,nametags;
+    public static KeyBinding openGui,noPush,tracers,hitboxes;
     private BKModuleKeys() {}
     public static void register() {
         openGui=register("key.bk.open_gui",BKConfig.data.guiKey);
         noPush=register("key.bk.no_push",BKConfig.data.noPushKey);
         tracers=register("key.bk.tracers",BKConfig.data.tracersKey);
-        nametags=register("key.bk.nametags",BKConfig.data.nametagsKey);
+        hitboxes=register("key.bk.hitboxes",BKConfig.data.hitboxesKey);
     }
     private static KeyBinding register(String id,int key) {
         return KeyBindingHelper.registerKeyBinding(new KeyBinding(id,InputUtil.Type.KEYSYM,key,"category.bk.client"));
@@ -21,7 +21,7 @@ public final class BKModuleKeys {
             case "BK GUI" -> openGui;
             case "NoPush" -> noPush;
             case "Tracers" -> tracers;
-            case "Nametags" -> nametags;
+            case "Hitboxes" -> hitboxes;
             default -> null;
         };
     }
@@ -30,7 +30,7 @@ public final class BKModuleKeys {
             case "BK GUI" -> BKConfig.data.guiKey=code;
             case "NoPush" -> BKConfig.data.noPushKey=code;
             case "Tracers" -> BKConfig.data.tracersKey=code;
-            case "Nametags" -> BKConfig.data.nametagsKey=code;
+            case "Hitboxes" -> BKConfig.data.hitboxesKey=code;
             default -> { return; }
         }
         KeyBinding binding=byModule(module);
