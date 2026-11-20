@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.particle.ParticleTypes;
 
 public final class BKMod implements ClientModInitializer {
+    private static boolean jumpWasAirborne = false;
     @Override public void onInitializeClient(){
         BKConfig.load(); BKModuleKeys.register();
         ClientTickEvents.END_CLIENT_TICK.register(BKMod::tick);
@@ -26,6 +27,26 @@ public final class BKMod implements ClientModInitializer {
             if (binding != null) while (binding.wasPressed()) toggle(entry.name());
         }
         BKErrorKiller.tick(client);
+        if (client.player == null || client.world == null) {
+            jumpWasAirborne = false;
+        } else {
+            boolean airborne = !client.player.isOnGround() && !client.player.isClimbing()
+                    && !client.player.isSubmergedInWater();
+            if (BKExtraModules.isEnabled("Jump Circles") && airborne && !jumpWasAirborne) {
+                var origin = client.player.getPos();
+                var settings = BKExtraModules.state("Jump Circles").settings;
+                double radius = parseSetting(settings.get("radius"), 0.9, 0.5, 1.8);
+                int points = (int) parseSetting(settings.get("points"), 24, 12, 48);
+                for (int i = 0; i < points; i++) {
+                    double angle = Math.PI * 2.0 * i / points;
+                    double dx = Math.cos(angle), dz = Math.sin(angle);
+                    client.world.addParticle(ParticleTypes.END_ROD,
+                            origin.x + dx * radius, origin.y + 0.04, origin.z + dz * radius,
+                            dx * 0.018, 0.012, dz * 0.018);
+                }
+            }
+            jumpWasAirborne = airborne;
+        }
         if (BKExtraModules.isEnabled("Orbit Particles") && client.player != null && client.world != null
                 && client.player.age % 2 == 0) {
             double phase = client.player.age * 0.16;
@@ -38,6 +59,10 @@ public final class BKMod implements ClientModInitializer {
             }
         }
         BKKnockbackDisplacement.tick(client);
+    }
+    private static double parseSetting(String value, double fallback, double min, double max) {
+        try { return Math.max(min, Math.min(max, Double.parseDouble(value))); }
+        catch (RuntimeException ignored) { return fallback; }
     }
     public static boolean isEnabled(String module){
         return switch(module){
