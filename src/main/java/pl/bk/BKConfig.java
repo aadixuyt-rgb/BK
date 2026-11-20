@@ -11,12 +11,12 @@ import java.nio.file.Path;
 public final class BKConfig {
     public static final class Data {
         public boolean noPush=false, noPushEntities=true, noPushFluids=false, noPushBlocks=true;
-        public boolean tracers=false, tracerPlayers=true, tracerAnimals=false, tracerMobs=false, tracerInvisibles=true, tracerIgnoreFriends=false;
+        public boolean tracers=false, tracerPlayers=true, tracerAnimals=false, tracerMobs=false, tracerInvisibles=true, tracerNakedPlayers=true, tracerFriends=true, tracerIgnoreFriends=false;
         public int tracerColor=0xFFFFFFFF, tracerFriendColor=0xFF20D86A;
         public float tracerWidth=1.5f;
         public boolean hitboxes=false;
         public float hitboxExpansion=0.30f;
-        public boolean hitboxPlayers=true, hitboxAnimals=true, hitboxMobs=true, hitboxInvisibles=true, hitboxFriends=false;
+        public boolean hitboxPlayers=true, hitboxAnimals=true, hitboxMobs=true, hitboxInvisibles=true, hitboxNakedPlayers=true, hitboxFriends=false;
         public boolean errorKiller=false;
         public int errorKillerCobwebDelay=1, errorKillerObsidianDelay=1;
         public boolean knockbackDisplacement=false, knockbackDynamic=true, knockbackSprintOnly=false, knockbackHideRotation=false;
