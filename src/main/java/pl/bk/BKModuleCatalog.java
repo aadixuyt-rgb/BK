@@ -11,6 +11,7 @@ public final class BKModuleCatalog {
         new Entry("Sky", "Visuals"),
         new Entry("Beautify", "Visuals"),
         new Entry("Orbit Particles", "Visuals"),
+        new Entry("Jump Circles", "Visuals"),
         new Entry("Aura", "Combat"),
         new Entry("AutoTotem", "Combat"),
         new Entry("AutoTrap", "Combat"),
