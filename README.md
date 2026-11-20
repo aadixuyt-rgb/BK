@@ -14,7 +14,7 @@ Samodzielny mod klienta Minecraft **1.21.4 / Fabric / Java 21**. Nie jest częś
 
 ## Dodatkowe moduły — rejestr i kategorie
 
-ClickGUI grupuje dodatkowe pozycje w kategoriach **Visuals**, **Combat**, **Player** i **Misc**. Każda pozycja ma osobny stan WŁ./WYŁ. oraz bind zapisywany w konfiguracji. Nowe pozycje są domyślnie wyłączone. Rejestr obejmuje: ESP, Custom Swords, Sky, Beautify, Orbit Particles, Aura, AutoTotem, AutoTrap, AutoWeb, AutoCrystal, AutoDripstone, FreeCam, Free Look, Stealer, Target Pearl, Fast Place i Blink / FakeLag.
+ClickGUI grupuje dodatkowe pozycje w kategoriach **Visuals**, **Combat**, **Player** i **Misc**. Każda pozycja ma osobny stan WŁ./WYŁ. oraz bind zapisywany w konfiguracji. Jump Circles tworzy pierścień cząsteczek przy oderwaniu się gracza od ziemi; promień i liczba cząsteczek są konfigurowalne. Nowe pozycje są domyślnie wyłączone. Rejestr obejmuje: ESP, Custom Swords, Sky, Beautify, Orbit Particles, Jump Circles, Aura, AutoTotem, AutoTrap, AutoWeb, AutoCrystal, AutoDripstone, FreeCam, Free Look, Stealer, Target Pearl, Fast Place i Blink / FakeLag.
 
 **Uwaga:** dodany rejestr, przełączniki i bindy nie oznaczają jeszcze pełnego przeniesienia logiki wszystkich 17 modułów. Każdy z nich wymaga osobnej adaptacji do samodzielnego BK; moduły źródłowe zależą od rozbudowanego frameworka BKClient-Full.
 
