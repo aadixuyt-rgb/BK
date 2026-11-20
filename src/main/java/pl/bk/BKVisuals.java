@@ -24,6 +24,7 @@ public final class BKVisuals {
         Camera camera=mc.gameRenderer.getCamera();
         int screenW=mc.getWindow().getScaledWidth();
         int screenH=mc.getWindow().getScaledHeight();
+        java.util.List<Label> labels=new java.util.ArrayList<>();
 
         for(PlayerEntity player:mc.world.getPlayers()) {
             if(player==mc.player || !player.isAlive()) continue;
@@ -44,24 +45,68 @@ public final class BKVisuals {
                 drawLine(ctx,screenW/2,screenH-2,p.x,p.y,tracerColor,BKConfig.data.tracerWidth);
             }
 
-            if(BKConfig.data.playerEsp && (!friend || BKConfig.data.espFriends) && distance<=BKConfig.data.espDistance) {
+            boolean espVisible=BKConfig.data.playerEsp && (!friend || BKConfig.data.espFriends)
+                    && distance<=BKConfig.data.espDistance;
+            if(espVisible) {
                 int color=friend?BKConfig.data.espFriendColor:BKConfig.data.espColor;
                 double projectedHeight=Math.max(8.0,Math.min(150.0,screenH*0.55/Math.max(1.0,p.depth)));
                 double halfWidth=projectedHeight*0.28;
                 if(BKConfig.data.espBox) drawOutline(ctx,(int)(p.x-halfWidth),(int)(p.y-projectedHeight*0.65),
                         (int)(p.x+halfWidth),(int)(p.y+projectedHeight*0.35),color);
-                if(BKConfig.data.espName) drawCentered(ctx,mc,player.getGameProfile().getName(),
-                        (int)p.x,(int)(p.y-projectedHeight*0.82),color);
-                if(BKConfig.data.espHealth) drawCentered(ctx,mc,Math.round(player.getHealth())+" HP",
-                        (int)p.x,(int)(p.y-projectedHeight*0.82+10),0xFF70E090);
             }
 
-            if(BKConfig.data.nametagsEnabled && BKConfig.data.nametags && distance<=BKConfig.data.espDistance) {
-                String label=player.getGameProfile().getName()+"  "+Math.round(player.getHealth())+" HP";
-                int nameY=(int)(p.y-12*BKConfig.data.nametagScale);
-                drawCentered(ctx,mc,label,(int)p.x,nameY,friend?BKConfig.data.espFriendColor:BKConfig.data.espColor);
-                if(BKConfig.data.nametagArmor && hasArmor) drawArmor(ctx,player,(int)p.x,nameY+12);
+            boolean showNametag=BKConfig.data.nametagsEnabled && BKConfig.data.nametags
+                    && distance<=BKConfig.data.espDistance;
+            boolean showEspText=espVisible && (BKConfig.data.espName || BKConfig.data.espHealth);
+            // Player ESP and Nametags used to draw the same name/HP twice. Prefer the
+            // dedicated Nametags label when both modules are active.
+            if(showNametag || showEspText) {
+                String label;
+                float scale;
+                if(showNametag) {
+                    label=player.getGameProfile().getName()+"  "+Math.round(player.getHealth())+" HP";
+                    scale=Math.max(0.45f,Math.min(0.85f,BKConfig.data.nametagScale*0.65f));
+                } else {
+                    String name=BKConfig.data.espName?player.getGameProfile().getName():"";
+                    String hp=BKConfig.data.espHealth?Math.round(player.getHealth())+" HP":"";
+                    label=(name.isEmpty()||hp.isEmpty())?(name+hp):(name+"  "+hp);
+                    scale=0.65f;
+                }
+                int color=friend?BKConfig.data.espFriendColor:BKConfig.data.espColor;
+                labels.add(new Label(p.x,p.y-12,label,color,scale,
+                        showNametag && BKConfig.data.nametagArmor && hasArmor?player:null,distance));
             }
+        }
+
+        // Draw nearest players first and move labels vertically if their screen rectangles overlap.
+        labels.sort(java.util.Comparator.comparingDouble(Label::distance));
+        java.util.List<int[]> occupied=new java.util.ArrayList<>();
+        int rendered=0;
+        for(Label label:labels) {
+            if(rendered>=32) break;
+            int textWidth=(int)(mc.textRenderer.getWidth(label.text())*label.scale())+8;
+            int textHeight=(int)(mc.textRenderer.fontHeight*label.scale())+5;
+            int x=(int)Math.round(label.x());
+            int baseY=(int)Math.round(label.y());
+            int chosenY=baseY;
+            boolean found=false;
+            for(int step=0;step<18;step++) {
+                int offset=step==0?0:((step+1)/2)*14*(step%2==1?-1:1);
+                int candidate=baseY+offset;
+                int left=x-textWidth/2, right=x+textWidth/2;
+                int top=candidate-2, bottom=candidate+textHeight;
+                if(left<0||right>screenW||top<0||bottom>screenH) continue;
+                boolean overlaps=false;
+                for(int[] rect:occupied) {
+                    if(left<rect[2]&&right>rect[0]&&top<rect[3]&&bottom>rect[1]) { overlaps=true; break; }
+                }
+                if(!overlaps) { chosenY=candidate; occupied.add(new int[]{left,top,right,bottom}); found=true; break; }
+            }
+            if(!found) continue;
+            drawScaledCentered(ctx,mc,label.text(),x,chosenY,label.color(),label.scale());
+            if(label.armorPlayer()!=null) drawArmor(ctx,label.armorPlayer(),x,
+                    chosenY+(int)(textHeight/label.scale())+2);
+            rendered++;
         }
 
         if(BKConfig.data.tracers && (BKConfig.data.tracerAnimals || BKConfig.data.tracerMobs)) {
@@ -128,6 +173,18 @@ public final class BKVisuals {
         ctx.fill(x1,y1,x2,y1+1,color); ctx.fill(x1,y2-1,x2,y2,color);
         ctx.fill(x1,y1,x1+1,y2,color); ctx.fill(x2-1,y1,x2,y2,color);
     }
+    private static void drawScaledCentered(DrawContext ctx,MinecraftClient mc,String value,int x,int y,int color,float scale) {
+        int width=mc.textRenderer.getWidth(value);
+        var matrices=ctx.getMatrices();
+        matrices.push();
+        matrices.translate(x,y,0);
+        matrices.scale(scale,scale,1.0f);
+        if(BKConfig.data.nametagBackground)
+            ctx.fill(-width/2-4,-2,width/2+4,mc.textRenderer.fontHeight+2,0x900B0D13);
+        ctx.drawTextWithShadow(mc.textRenderer,Text.literal(value),-width/2,0,color);
+        matrices.pop();
+    }
+    private record Label(double x,double y,String text,int color,float scale,PlayerEntity armorPlayer,double distance) {}
     private static void drawCentered(DrawContext ctx,MinecraftClient mc,String value,int x,int y,int color) {
         int w=mc.textRenderer.getWidth(value);
         if(BKConfig.data.nametagBackground) ctx.fill(x-w/2-3,y-2,x+w/2+3,y+mc.textRenderer.fontHeight+1,0x900B0D13);
