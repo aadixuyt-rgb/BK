@@ -16,7 +16,8 @@ public final class BKClickGui extends Screen {
     private String category="Visuals";
     private String selectedModule=null;
     private String waitingForBind=null;
-    private int scroll;\n    private int settingsPage;
+    private int scroll;
+    private int settingsPage;
 
     public BKClickGui(){super(Text.literal("BK Client"));}
 
