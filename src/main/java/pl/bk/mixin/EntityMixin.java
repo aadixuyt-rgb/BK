@@ -27,6 +27,13 @@ public abstract class EntityMixin {
                 (living instanceof PassiveEntity && BKConfig.data.hitboxAnimals) ||
                 (living instanceof Monster && BKConfig.data.hitboxMobs);
         if(!selected || (!BKConfig.data.hitboxInvisibles && living.isInvisible())) return;
+        if(living instanceof PlayerEntity target) {
+            if(mc.player.isTeammate(target) && !BKConfig.data.hitboxFriends) return;
+            if(!BKConfig.data.hitboxNakedPlayers) {
+                for(net.minecraft.item.ItemStack stack:target.getArmorItems()) if(!stack.isEmpty()) { selected=false; break; }
+                if(!selected) return;
+            }
+        }
         double extra=BKConfig.data.hitboxExpansion;
         if(extra>0) cir.setReturnValue(cir.getReturnValue().expand(extra,0.0,extra));
     }
