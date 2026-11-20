@@ -20,8 +20,21 @@ public final class BKMod implements ClientModInitializer {
         while(BKModuleKeys.knockback.wasPressed())toggle("Knockback Displacement");
         while(BKModuleKeys.playerEsp.wasPressed())toggle("Player ESP");
         while(BKModuleKeys.nametags.wasPressed())toggle("Nametags");
+        for (BKModuleCatalog.Entry entry : BKModuleCatalog.EXTRA) {
+            net.minecraft.client.option.KeyBinding binding = BKModuleKeys.byModule(entry.name());
+            if (binding != null) while (binding.wasPressed()) toggle(entry.name());
+        }
         BKErrorKiller.tick(client);
         BKKnockbackDisplacement.tick(client);
+    }
+    public static boolean isEnabled(String module){
+        return switch(module){
+            case "NoPush"->BKConfig.data.noPush; case "Tracers"->BKConfig.data.tracers;
+            case "Hitboxes"->BKConfig.data.hitboxes; case "Error Killer"->BKConfig.data.errorKiller;
+            case "Knockback Displacement"->BKConfig.data.knockbackDisplacement;
+            case "Player ESP"->BKConfig.data.playerEsp; case "Nametags"->BKConfig.data.nametagsEnabled;
+            default->BKModuleCatalog.EXTRA.stream().anyMatch(e -> e.name().equals(module) && BKExtraModules.isEnabled(module));
+        };
     }
     public static void toggle(String module){
         switch(module){
