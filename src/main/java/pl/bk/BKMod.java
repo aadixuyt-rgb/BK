@@ -24,10 +24,6 @@ public final class BKMod implements ClientModInitializer {
             net.minecraft.client.option.KeyBinding binding = BKModuleKeys.byModule(entry.name());
             if (binding != null) while (binding.wasPressed()) toggle(entry.name());
         }
-        for (BKModuleCatalog.Entry entry : BKModuleCatalog.EXTRA) {
-            net.minecraft.client.option.KeyBinding binding = BKModuleKeys.byModule(entry.name());
-            if (binding != null) while (binding.wasPressed()) toggle(entry.name());
-        }
         BKErrorKiller.tick(client);
         BKKnockbackDisplacement.tick(client);
     }
