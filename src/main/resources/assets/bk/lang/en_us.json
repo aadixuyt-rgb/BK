@@ -3,9 +3,5 @@
   "key.bk.open_gui": "Open BK ClickGUI",
   "key.bk.no_push": "Toggle NoPush",
   "key.bk.tracers": "Toggle Tracers",
-  "key.bk.hitboxes": "Toggle Hitboxes",
-  "key.bk.error_killer": "Toggle Error Killer",
-  "key.bk.knockback_displacement": "Toggle Knockback Displacement",
-  "key.bk.player_esp": "Toggle Player ESP",
   "key.bk.nametags": "Toggle Nametags"
 }
