@@ -27,7 +27,7 @@ public final class BKVisuals {
             boolean friend=player && mc.player.isTeammate(entity);
             if(player) {
                 if(!BKConfig.data.tracerPlayers || (friend && BKConfig.data.tracerIgnoreFriends)
-                        || (!friend && !BKConfig.data.tracerFriends)
+                        || (friend && !BKConfig.data.tracerFriends)
                         || (!BKConfig.data.tracerNakedPlayers && !hasArmor((PlayerEntity)entity))) continue;
             } else if(!((living instanceof PassiveEntity && BKConfig.data.tracerAnimals)
                     || (living instanceof Monster && BKConfig.data.tracerMobs))) continue;
