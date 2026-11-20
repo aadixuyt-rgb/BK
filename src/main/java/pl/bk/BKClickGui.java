@@ -125,9 +125,6 @@ public final class BKClickGui extends Screen {
         return y;
     }
     private int topY(){return height/2-PANEL_H/2;}
-        }
-        addDrawableChild(button(left+14,top+PANEL_H-32,402,20,"Zapisz ustawienia",b->{BKConfig.save();clearAndInit();}));
-    }
 
     private int toggle(int left,int y,String label,java.util.function.BooleanSupplier get,java.util.function.Consumer<Boolean> set){
         addDrawableChild(button(left+14,y,402,22,label+": "+(get.getAsBoolean()?"WŁ.":"WYŁ."),b->{set.accept(!get.getAsBoolean());BKConfig.save();clearAndInit();}));
