@@ -98,6 +98,19 @@ public final class BKClickGui extends Screen {
                 y=toggle(left,y,"Pokaż zbroję (ustawienie)",()->BKConfig.data.nametagArmor,v->BKConfig.data.nametagArmor=v);
                 y=cycle(left,y,"Skala: "+BKConfig.data.nametagScale,()->BKConfig.data.nametagScale=BKConfig.data.nametagScale>=2?0.5f:BKConfig.data.nametagScale+0.1f);
             }
+            case "Jump Circles" -> {
+                BKExtraModules.State state = BKExtraModules.state("Jump Circles");
+                String radius = state.settings.getOrDefault("radius", "0.9");
+                String points = state.settings.getOrDefault("points", "24");
+                y=cycle(left,y,"Promień kręgu: "+radius,()->{
+                    double next=Double.parseDouble(radius)>=1.7?0.5:Double.parseDouble(radius)+0.2;
+                    state.settings.put("radius",String.format(java.util.Locale.ROOT,"%.1f",next)); BKConfig.save(); clearAndInit();
+                });
+                y=cycle(left,y,"Liczba cząsteczek: "+points,()->{
+                    int next=Integer.parseInt(points)>=48?12:Integer.parseInt(points)+6;
+                    state.settings.put("points",Integer.toString(next)); BKConfig.save(); clearAndInit();
+                });
+            }
         }
         addDrawableChild(button(left+14,top+PANEL_H-32,402,20,"Zapisz ustawienia",b->{BKConfig.save();clearAndInit();}));
     }
