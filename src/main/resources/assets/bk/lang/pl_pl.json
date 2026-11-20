@@ -1,0 +1,11 @@
+{
+  "category.bk.client": "BK Client",
+  "key.bk.open_gui": "Otwórz menu BK",
+  "key.bk.no_push": "Przełącz NoPush",
+  "key.bk.tracers": "Przełącz Tracers",
+  "key.bk.hitboxes": "Przełącz Hitboxes",
+  "key.bk.error_killer": "Przełącz Error Killer",
+  "key.bk.knockback_displacement": "Przełącz Knockback Displacement",
+  "key.bk.player_esp": "Przełącz Player ESP",
+  "key.bk.nametags": "Przełącz Nametags"
+}
