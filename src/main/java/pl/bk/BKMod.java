@@ -47,6 +47,19 @@ public final class BKMod implements ClientModInitializer {
             }
             jumpWasAirborne = airborne;
         }
+        if (BKExtraModules.isEnabled("Blizzard") && client.player != null && client.world != null
+                && client.player.age % 4 == 0) {
+            var p = client.player.getPos();
+            for (int i = 0; i < 10; i++) {
+                double angle = Math.random() * Math.PI * 2.0;
+                double radius = 2.0 + Math.random() * 4.0;
+                double x = p.x + Math.cos(angle) * radius;
+                double y = p.y + 1.0 + Math.random() * 3.0;
+                double z = p.z + Math.sin(angle) * radius;
+                client.world.addParticle(ParticleTypes.SNOWFLAKE, x, y, z,
+                        -Math.cos(angle) * 0.025, -0.035, -Math.sin(angle) * 0.025);
+            }
+        }
         if (BKExtraModules.isEnabled("Orbit Particles") && client.player != null && client.world != null
                 && client.player.age % 2 == 0) {
             double phase = client.player.age * 0.16;
