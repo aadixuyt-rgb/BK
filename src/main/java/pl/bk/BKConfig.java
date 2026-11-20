@@ -6,10 +6,13 @@ import net.fabricmc.loader.api.FabricLoader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /** Persistent settings for the standalone BK client. */
 public final class BKConfig {
     public static final class Data {
+        public Map<String, BKExtraModules.State> extraModules = new LinkedHashMap<>();
         public boolean noPush=false, noPushEntities=true, noPushFluids=false, noPushBlocks=true;
         public boolean tracers=false, tracerPlayers=true, tracerAnimals=false, tracerMobs=false, tracerInvisibles=true, tracerNakedPlayers=true, tracerFriends=true, tracerIgnoreFriends=false;
         public int tracerColor=0xFFFFFFFF, tracerFriendColor=0xFF20D86A;
@@ -41,6 +44,8 @@ public final class BKConfig {
         sanitize(); save();
     }
     private static void sanitize() {
+        if (data.extraModules == null) data.extraModules = new LinkedHashMap<>();
+        for (BKModuleCatalog.Entry entry : BKModuleCatalog.EXTRA) BKExtraModules.state(entry.name());
         data.tracerWidth=clamp(data.tracerWidth,1,5); data.hitboxExpansion=clamp(data.hitboxExpansion,0,1);
         data.errorKillerCobwebDelay=clamp(data.errorKillerCobwebDelay,1,100);
         data.errorKillerObsidianDelay=clamp(data.errorKillerObsidianDelay,1,100);
