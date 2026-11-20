@@ -40,7 +40,7 @@ public final class BKClickGui extends Screen {
             KeyBinding key=BKModuleKeys.byModule(name);
             String keyName=waitingForBind!=null&&waitingForBind.equals(name)?"Naciśnij klawisz":
                     (key==null?"---":key.getBoundKeyLocalizedText().getString());
-            addDrawableChild(button(left+164,y,138,24,"Bind: "+keyName,b->{waitingForBind=name;}));
+            addDrawableChild(button(left+164,y,138,24,"Bind: "+keyName,b->{waitingForBind=name;clearAndInit();}));
             addDrawableChild(button(left+308,y,108,24,"Ustawienia →",b->{selectedModule=name;waitingForBind=null;clearAndInit();}));
             y+=32;
         }
@@ -62,6 +62,9 @@ public final class BKClickGui extends Screen {
                 y=toggle(left,y,"Zwierzęta",()->BKConfig.data.tracerAnimals,v->BKConfig.data.tracerAnimals=v);
                 y=toggle(left,y,"Moby",()->BKConfig.data.tracerMobs,v->BKConfig.data.tracerMobs=v);
                 y=toggle(left,y,"Niewidzialni",()->BKConfig.data.tracerInvisibles,v->BKConfig.data.tracerInvisibles=v);
+                y=toggle(left,y,"Znajomi",()->BKConfig.data.tracerFriends,v->BKConfig.data.tracerFriends=v);
+                y=toggle(left,y,"Ignoruj znajomych",()->BKConfig.data.tracerIgnoreFriends,v->BKConfig.data.tracerIgnoreFriends=v);
+                y=toggle(left,y,"Nadzy gracze",()->BKConfig.data.tracerNakedPlayers,v->BKConfig.data.tracerNakedPlayers=v);
                 y=cycle(left,y,"Grubość linii: "+BKConfig.data.tracerWidth,()->BKConfig.data.tracerWidth=BKConfig.data.tracerWidth>=4.5f?1.0f:BKConfig.data.tracerWidth+0.5f);
             }
             case "Hitboxes" -> {
@@ -69,6 +72,8 @@ public final class BKClickGui extends Screen {
                 y=toggle(left,y,"Gracze",()->BKConfig.data.hitboxPlayers,v->BKConfig.data.hitboxPlayers=v);
                 y=toggle(left,y,"Zwierzęta",()->BKConfig.data.hitboxAnimals,v->BKConfig.data.hitboxAnimals=v);
                 y=toggle(left,y,"Moby",()->BKConfig.data.hitboxMobs,v->BKConfig.data.hitboxMobs=v);
+                y=toggle(left,y,"Nadzy gracze",()->BKConfig.data.hitboxNakedPlayers,v->BKConfig.data.hitboxNakedPlayers=v);
+                y=toggle(left,y,"Znajomi",()->BKConfig.data.hitboxFriends,v->BKConfig.data.hitboxFriends=v);
                 y=toggle(left,y,"Niewidzialni",()->BKConfig.data.hitboxInvisibles,v->BKConfig.data.hitboxInvisibles=v);
             }
             case "Error Killer" -> {
