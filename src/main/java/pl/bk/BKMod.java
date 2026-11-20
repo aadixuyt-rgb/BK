@@ -40,15 +40,6 @@ public final class BKMod implements ClientModInitializer {
             default->BKModuleCatalog.EXTRA.stream().anyMatch(e -> e.name().equals(module) && BKExtraModules.isEnabled(module));
         };
     }
-    public static boolean isEnabled(String module){
-        return switch(module){
-            case "NoPush"->BKConfig.data.noPush; case "Tracers"->BKConfig.data.tracers;
-            case "Hitboxes"->BKConfig.data.hitboxes; case "Error Killer"->BKConfig.data.errorKiller;
-            case "Knockback Displacement"->BKConfig.data.knockbackDisplacement;
-            case "Player ESP"->BKConfig.data.playerEsp; case "Nametags"->BKConfig.data.nametagsEnabled;
-            default->BKModuleCatalog.EXTRA.stream().anyMatch(e -> e.name().equals(module) && BKExtraModules.isEnabled(module));
-        };
-    }
     public static void toggle(String module){
         switch(module){
             case "NoPush"->BKConfig.data.noPush=!BKConfig.data.noPush;
