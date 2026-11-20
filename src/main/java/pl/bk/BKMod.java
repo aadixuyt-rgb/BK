@@ -4,6 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.particle.ParticleTypes;
 
 public final class BKMod implements ClientModInitializer {
     @Override public void onInitializeClient(){
@@ -25,6 +26,17 @@ public final class BKMod implements ClientModInitializer {
             if (binding != null) while (binding.wasPressed()) toggle(entry.name());
         }
         BKErrorKiller.tick(client);
+        if (BKExtraModules.isEnabled("Orbit Particles") && client.player != null && client.world != null
+                && client.player.age % 2 == 0) {
+            double phase = client.player.age * 0.16;
+            for (int i = 0; i < 3; i++) {
+                double angle = phase + i * (Math.PI * 2.0 / 3.0);
+                double x = client.player.getX() + Math.cos(angle) * 1.15;
+                double y = client.player.getY() + 0.8 + Math.sin(phase * 0.7 + i) * 0.25;
+                double z = client.player.getZ() + Math.sin(angle) * 1.15;
+                client.world.addParticle(ParticleTypes.END_ROD, x, y, z, 0.0, 0.015, 0.0);
+            }
+        }
         BKKnockbackDisplacement.tick(client);
     }
     public static boolean isEnabled(String module){
