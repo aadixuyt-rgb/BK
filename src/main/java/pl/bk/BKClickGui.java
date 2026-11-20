@@ -7,7 +7,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.Text;
 
 public final class BKClickGui extends Screen {
-    private static final int W=390,H=270;
+    private static final int W=390,H=300;
     private String waitingForBind=null;
     private String page=null;
     public BKClickGui() { super(Text.literal("BK Client")); }
@@ -37,11 +37,12 @@ public final class BKClickGui extends Screen {
             } else {
                 addDrawableChild(button(x+12,y+70,250,24,"Rozmiar hitboxa: "+String.format(java.util.Locale.ROOT,"%.1f",BKConfig.data.hitboxScale),b->{BKConfig.data.hitboxScale=Math.min(1.0f,BKConfig.data.hitboxScale+0.1f);BKConfig.save();clearAndInit();}));
                 addDrawableChild(button(x+270,y+70,108,24,"− 0.1",b->{BKConfig.data.hitboxScale=Math.max(0.0f,BKConfig.data.hitboxScale-0.1f);BKConfig.save();clearAndInit();}));
-                addToggle(x,y+102,"Gracze",()->BKConfig.data.hitboxPlayers,v->BKConfig.data.hitboxPlayers=v);
-                addToggle(x,y+134,"Zwierzęta",()->BKConfig.data.hitboxAnimals,v->BKConfig.data.hitboxAnimals=v);
-                addToggle(x,y+166,"Wrogie moby",()->BKConfig.data.hitboxMobs,v->BKConfig.data.hitboxMobs=v);
-                addToggle(x,y+198,"Niewidzialni",()->BKConfig.data.hitboxInvisibles,v->BKConfig.data.hitboxInvisibles=v);
-                addToggle(x,y+230,"Znajomi",()->BKConfig.data.hitboxFriends,v->BKConfig.data.hitboxFriends=v);
+                addToggle(x,y+102,"Gracze w zbroi",()->BKConfig.data.hitboxPlayers,v->BKConfig.data.hitboxPlayers=v);
+                addToggle(x,y+134,"Nadzy gracze",()->BKConfig.data.hitboxNakedPlayers,v->BKConfig.data.hitboxNakedPlayers=v);
+                addToggle(x,y+166,"Zwierzęta",()->BKConfig.data.hitboxAnimals,v->BKConfig.data.hitboxAnimals=v);
+                addToggle(x,y+198,"Moby",()->BKConfig.data.hitboxMobs,v->BKConfig.data.hitboxMobs=v);
+                addToggle(x,y+230,"Niewidzialni",()->BKConfig.data.hitboxInvisibles,v->BKConfig.data.hitboxInvisibles=v);
+                addToggle(x,y+262,"Znajomi",()->BKConfig.data.hitboxFriends,v->BKConfig.data.hitboxFriends=v);
             }
         }
     }
