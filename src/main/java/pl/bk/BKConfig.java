@@ -25,10 +25,10 @@ public final class BKConfig {
         public boolean playerEsp=false, espBox=true, espName=true, espHealth=true, espFriends=true;
         public float espDistance=96.0f;
         public int espColor=0xFF9A5DFF, espFriendColor=0xFF20D86A;
-        public boolean nametags=true;
+        public boolean nametagsEnabled=true, nametags=true;
         public float nametagScale=1.0f;
         public boolean nametagBackground=true, nametagArmor=false;
-        public int guiKey=344, noPushKey=0, tracersKey=0, hitboxesKey=0, errorKillerKey=0, knockbackKey=0, playerEspKey=0;
+        public int guiKey=344, noPushKey=0, tracersKey=0, hitboxesKey=0, errorKillerKey=0, knockbackKey=0, playerEspKey=0, nametagsKey=0;
     }
     public static Data data=new Data();
     private static final Gson GSON=new GsonBuilder().setPrettyPrinting().create();
@@ -49,7 +49,7 @@ public final class BKConfig {
         data.guiKey=clamp(data.guiKey,0,348); data.noPushKey=clamp(data.noPushKey,0,348);
         data.tracersKey=clamp(data.tracersKey,0,348); data.hitboxesKey=clamp(data.hitboxesKey,0,348);
         data.errorKillerKey=clamp(data.errorKillerKey,0,348); data.knockbackKey=clamp(data.knockbackKey,0,348);
-        data.playerEspKey=clamp(data.playerEspKey,0,348);
+        data.playerEspKey=clamp(data.playerEspKey,0,348); data.nametagsKey=clamp(data.nametagsKey,0,348);
     }
     private static float clamp(float n,float min,float max){return Float.isFinite(n)?Math.max(min,Math.min(max,n)):min;}
     private static int clamp(int n,int min,int max){return Math.max(min,Math.min(max,n));}
