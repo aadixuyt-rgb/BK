@@ -7,7 +7,14 @@ group = project.maven_group
 
 base { archivesName = project.archives_base_name }
 
-repositories { mavenCentral() }
+repositories {
+    maven { name = 'Fabric'; url = 'https://maven.fabricmc.net/' }
+    maven {
+        name = 'GoogleMavenCentral'
+        url = 'https://maven-central.storage-download.googleapis.com/maven2/'
+    }
+    mavenCentral()
+}
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
