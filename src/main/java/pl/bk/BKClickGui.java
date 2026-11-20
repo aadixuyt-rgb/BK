@@ -16,7 +16,7 @@ public final class BKClickGui extends Screen {
     private String category="Visuals";
     private String selectedModule=null;
     private String waitingForBind=null;
-    private int scroll;
+    private int scroll;\n    private int settingsPage;
 
     public BKClickGui(){super(Text.literal("BK Client"));}
 
@@ -24,7 +24,7 @@ public final class BKClickGui extends Screen {
         clearChildren();
         int left=width/2-PANEL_W/2;
         int top=height/2-PANEL_H/2;
-        addDrawableChild(button(left+14,top+35,142,20,"Kategoria: "+category+"  >",b->{int i=(CATEGORIES.indexOf(category)+1)%CATEGORIES.size();category=CATEGORIES.get(i);selectedModule=null;scroll=0;clearAndInit();}));
+        addDrawableChild(button(left+14,top+35,142,20,"Kategoria: "+category+"  >",b->{int i=(CATEGORIES.indexOf(category)+1)%CATEGORIES.size();category=CATEGORIES.get(i);selectedModule=null;scroll=0;settingsPage=0;clearAndInit();}));
         if(selectedModule!=null) addDrawableChild(button(left+110,top+35,90,20,"← Wróć",b->{selectedModule=null;clearAndInit();}));
         addDrawableChild(button(left+PANEL_W-104,top+35,90,20,"Zamknij",b->close()));
         if(selectedModule==null) initModules(left,top); else initSettings(left,top);
@@ -41,7 +41,7 @@ public final class BKClickGui extends Screen {
             String keyName=waitingForBind!=null&&waitingForBind.equals(name)?"Naciśnij klawisz":
                     (key==null?"---":key.getBoundKeyLocalizedText().getString());
             addDrawableChild(button(left+164,y,138,24,"Bind: "+keyName,b->{waitingForBind=name;clearAndInit();}));
-            addDrawableChild(button(left+308,y,108,24,"Ustawienia →",b->{selectedModule=name;waitingForBind=null;clearAndInit();}));
+            addDrawableChild(button(left+308,y,108,24,"Ustawienia →",b->{selectedModule=name;waitingForBind=null;settingsPage=0;clearAndInit();}));
             y+=32;
         }
         addDrawableChild(button(left+14,top+PANEL_H-32,402,20,"Zapisz ustawienia",b->{
@@ -98,19 +98,33 @@ public final class BKClickGui extends Screen {
                 y=toggle(left,y,"Pokaż zbroję (ustawienie)",()->BKConfig.data.nametagArmor,v->BKConfig.data.nametagArmor=v);
                 y=cycle(left,y,"Skala: "+BKConfig.data.nametagScale,()->BKConfig.data.nametagScale=BKConfig.data.nametagScale>=2?0.5f:BKConfig.data.nametagScale+0.1f);
             }
-            case "Jump Circles" -> {
-                BKExtraModules.State state = BKExtraModules.state("Jump Circles");
-                String radius = state.settings.getOrDefault("radius", "0.9");
-                String points = state.settings.getOrDefault("points", "24");
-                y=cycle(left,y,"Promień kręgu: "+radius,()->{
-                    double next=Double.parseDouble(radius)>=1.7?0.5:Double.parseDouble(radius)+0.2;
-                    state.settings.put("radius",String.format(java.util.Locale.ROOT,"%.1f",next)); BKConfig.save(); clearAndInit();
-                });
-                y=cycle(left,y,"Liczba cząsteczek: "+points,()->{
-                    int next=Integer.parseInt(points)>=48?12:Integer.parseInt(points)+6;
-                    state.settings.put("points",Integer.toString(next)); BKConfig.save(); clearAndInit();
-                });
-            }
+            default -> y=genericSettings(left,y);
+        }
+        addDrawableChild(button(left+14,top+PANEL_H-32,402,20,"Zapisz ustawienia",b->{BKConfig.save();clearAndInit();}));
+    }
+
+    private int genericSettings(int left,int y){
+        List<BKModuleSettings.Option> options=BKModuleSettings.forModule(selectedModule);
+        int pageSize=7;
+        int pages=Math.max(1,(options.size()+pageSize-1)/pageSize);
+        settingsPage=Math.max(0,Math.min(settingsPage,pages-1));
+        int start=settingsPage*pageSize;
+        for(int i=start;i<Math.min(options.size(),start+pageSize);i++){
+            BKModuleSettings.Option option=options.get(i);
+            String current=BKModuleSettings.value(selectedModule,option);
+            addDrawableChild(button(left+14,y,402,22,option.label()+": "+current,b->{
+                BKModuleSettings.next(selectedModule,option);clearAndInit();
+            }));
+            y+=27;
+        }
+        if(options.isEmpty()){
+            addDrawableChild(button(left+14,y,402,22,"Brak zdefiniowanych opcji",b->{}));
+        }
+        addDrawableChild(button(left+14,topY()+PANEL_H-58,195,20,"← Poprzednie",b->{settingsPage=(settingsPage+pages-1)%pages;clearAndInit();}));
+        addDrawableChild(button(left+221,topY()+PANEL_H-58,195,20,"Następne → ("+(settingsPage+1)+"/"+pages+")",b->{settingsPage=(settingsPage+1)%pages;clearAndInit();}));
+        return y;
+    }
+    private int topY(){return height/2-PANEL_H/2;}
         }
         addDrawableChild(button(left+14,top+PANEL_H-32,402,20,"Zapisz ustawienia",b->{BKConfig.save();clearAndInit();}));
     }
