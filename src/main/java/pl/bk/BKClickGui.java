@@ -15,7 +15,7 @@ public final class BKClickGui extends Screen {
         clearChildren();
         int x=width/2-W/2, y=height/2-H/2;
         addDrawableChild(button(x+W-94,y+12,80,20,"Zamknij",b->close()));
-        addDrawableChild(button(x+12,y+55,244,28,"NoPush  ["+(BKConfig.data.noPush?"WŁ.":"WYŁ.")+"]",b->{BKMod.toggleNoPush();clearAndInit();}));
+        addDrawableChild(button(x+12,y+55,244,28,"Air Freeze  ["+(BKConfig.data.noPush?"WŁ.":"WYŁ.")+"]",b->{BKMod.toggleAirFreeze();clearAndInit();}));
         KeyBinding key=BKModuleKeys.noPush;
         String keyText=waitingForBind?"Naciśnij klawisz":key.getBoundKeyLocalizedText().getString();
         addDrawableChild(button(x+264,y+55,114,28,"Bind: "+keyText,b->{waitingForBind=true;clearAndInit();}));
@@ -45,7 +45,7 @@ public final class BKClickGui extends Screen {
         ctx.fill(x,y,x+W,y+H,0xF0161B26);
         ctx.fill(x,y,x+W,y+2,0xFF9A5DFF);
         ctx.drawTextWithShadow(textRenderer,Text.literal("BK CLIENT"),x+12,y+14,0xFFFFFFFF);
-        ctx.drawTextWithShadow(textRenderer,Text.literal("Jeden moduł: NoPush"),x+12,y+32,0xFFADB7C8);
+        ctx.drawTextWithShadow(textRenderer,Text.literal("Air Freeze — blokowanie wypychania"),x+12,y+32,0xFFADB7C8);
         super.render(ctx,mouseX,mouseY,delta);
     }
     @Override public boolean shouldPause() { return false; }
