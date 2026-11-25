@@ -43,7 +43,7 @@ public final class BKDripstone {
         BlockPos placePos=dripstonePos.down();
         if(!client.world.getBlockState(placePos).isAir()) return;
         BlockPos supportPos=placePos.offset(vertical.getOpposite());
-        if(!client.world.getBlockState(supportPos).isAir()) return;
+        if(client.world.getBlockState(supportPos).isAir()) return;
 
         int dripstoneSlot=findDripstone(client);
         if(dripstoneSlot<0) return;
