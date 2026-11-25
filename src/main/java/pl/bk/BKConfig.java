@@ -7,11 +7,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-/** Persistent configuration for NoPush. */
 public final class BKConfig {
     public static final class Data {
         public boolean noPush=false, noPushEntities=true, noPushFluids=false, noPushBlocks=true;
-        public int guiKey=344, noPushKey=0;
+        public int guiKey=344, noPushKey=72;
     }
     public static Data data=new Data();
     private static final Gson GSON=new GsonBuilder().setPrettyPrinting().create();
