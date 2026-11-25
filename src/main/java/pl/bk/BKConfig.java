@@ -9,8 +9,9 @@ import java.nio.file.Path;
 
 public final class BKConfig {
     public static final class Data {
+        public boolean airFreeze=false;
         public boolean noPush=false, noPushEntities=true, noPushFluids=false, noPushBlocks=true;
-        public int guiKey=344, noPushKey=72;
+        public int guiKey=344, airFreezeKey=72;
         public int dripstoneDelayMs=250;
     }
     public static Data data=new Data();
@@ -25,7 +26,7 @@ public final class BKConfig {
             }
         } catch(Exception ignored) { data=new Data(); }
         data.guiKey=clamp(data.guiKey,0,348);
-        data.noPushKey=clamp(data.noPushKey,0,348);
+        data.airFreezeKey=clamp(data.airFreezeKey==0?72:data.airFreezeKey,0,348);
         data.dripstoneDelayMs=clamp(data.dripstoneDelayMs,50,2000);
         save();
     }
