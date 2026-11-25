@@ -12,7 +12,6 @@ public final class BKConfig {
         public boolean airFreeze=false;
         public boolean noPush=false, noPushEntities=true, noPushFluids=false, noPushBlocks=true;
         public int guiKey=344, airFreezeKey=72;
-        public int dripstoneDelayMs=250;
     }
     public static Data data=new Data();
     private static final Gson GSON=new GsonBuilder().setPrettyPrinting().create();
@@ -27,7 +26,6 @@ public final class BKConfig {
         } catch(Exception ignored) { data=new Data(); }
         data.guiKey=clamp(data.guiKey,0,348);
         data.airFreezeKey=clamp(data.airFreezeKey==0?72:data.airFreezeKey,0,348);
-        data.dripstoneDelayMs=clamp(data.dripstoneDelayMs,50,2000);
         save();
     }
     private static int clamp(int n,int min,int max) { return Math.max(min,Math.min(max,n)); }
