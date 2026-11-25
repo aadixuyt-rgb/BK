@@ -3,12 +3,11 @@ package pl.bk;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.Text;
 
 public final class BKClickGui extends Screen {
-    private static final int W=410,H=340;
+    private static final int W=410,H=270;
     private boolean waitingForBind=false;
     public BKClickGui() { super(Text.literal("BK Client")); }
 
@@ -20,32 +19,16 @@ public final class BKClickGui extends Screen {
         KeyBinding key=BKModuleKeys.airFreeze;
         String keyText=waitingForBind?"Naciśnij klawisz":key.getBoundKeyLocalizedText().getString();
         addDrawableChild(button(x+264,y+48,134,28,"Bind: "+keyText,b->{waitingForBind=true;clearAndInit();}));
-        addToggle(x,y+84,"NoPush",()->BKConfig.data.noPush,v->BKConfig.data.noPush=v);
-        addToggle(x,y+114,"Blokuj push od graczy",()->BKConfig.data.noPushEntities,v->BKConfig.data.noPushEntities=v);
-        addToggle(x,y+144,"Blokuj push od płynów",()->BKConfig.data.noPushFluids,v->BKConfig.data.noPushFluids=v);
-        addToggle(x,y+174,"Blokuj wypychanie z bloków",()->BKConfig.data.noPushBlocks,v->BKConfig.data.noPushBlocks=v);
-
-        addDrawableChild(button(x+12,y+220,W-24,22,"BK DRIPSTONE — ZAWSZE AKTYWNY",b->{}));
-        addDrawableChild(new DelaySlider(x+12,y+250,W-24,20));
-        addDrawableChild(button(x+12,y+282,W-24,24,"Opóźnienie zapisuje się automatycznie",b->{}));
+        addToggle(x,y+92,"NoPush",()->BKConfig.data.noPush,v->BKConfig.data.noPush=v);
+        addToggle(x,y+126,"Blokuj push od graczy",()->BKConfig.data.noPushEntities,v->BKConfig.data.noPushEntities=v);
+        addToggle(x,y+160,"Blokuj push od płynów",()->BKConfig.data.noPushFluids,v->BKConfig.data.noPushFluids=v);
+        addToggle(x,y+194,"Blokuj wypychanie z bloków",()->BKConfig.data.noPushBlocks,v->BKConfig.data.noPushBlocks=v);
     }
     private void addToggle(int x,int y,String label,java.util.function.BooleanSupplier get,java.util.function.Consumer<Boolean> set) {
-        addDrawableChild(button(x+12,y,386,24,label+": "+(get.getAsBoolean()?"WŁ.":"WYŁ."),b->{set.accept(!get.getAsBoolean());BKConfig.save();clearAndInit();}));
+        addDrawableChild(button(x+12,y,386,26,label+": "+(get.getAsBoolean()?"WŁ.":"WYŁ."),b->{set.accept(!get.getAsBoolean());BKConfig.save();clearAndInit();}));
     }
     private ButtonWidget button(int x,int y,int w,int h,String label,ButtonWidget.PressAction action) {
         return ButtonWidget.builder(Text.literal(label),action).dimensions(x,y,w,h).build();
-    }
-    private static final class DelaySlider extends SliderWidget {
-        DelaySlider(int x,int y,int width,int height) {
-            super(x,y,width,height,Text.empty(),(BKConfig.data.dripstoneDelayMs-50)/1950.0);
-            updateMessage();
-        }
-        @Override protected void updateMessage() { setMessage(Text.literal("Opóźnienie: "+getDelay()+" ms")); }
-        @Override protected void applyValue() {
-            BKConfig.data.dripstoneDelayMs=getDelay();
-            BKConfig.save();
-        }
-        private int getDelay() { return Math.max(50,Math.min(2000,50+(int)Math.round(value*1950))); }
     }
     @Override public boolean keyPressed(int keyCode,int scanCode,int modifiers) {
         if(waitingForBind) {
