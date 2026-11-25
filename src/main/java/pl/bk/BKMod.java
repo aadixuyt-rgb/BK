@@ -17,7 +17,6 @@ public final class BKMod implements ClientModInitializer {
             BKConfig.save();
         }
         BKAirFreeze.tick(client);
-        BKDripstone.tick(client);
     }
     public static void toggleAirFreeze() {
         BKConfig.data.airFreeze=!BKConfig.data.airFreeze;
