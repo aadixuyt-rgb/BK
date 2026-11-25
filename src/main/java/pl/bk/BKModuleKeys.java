@@ -9,7 +9,7 @@ public final class BKModuleKeys {
     private BKModuleKeys() {}
     public static void register() {
         openGui=register("key.bk.open_gui",BKConfig.data.guiKey);
-        noPush=register("key.bk.no_push",BKConfig.data.noPushKey);
+        noPush=register("key.bk.air_freeze",BKConfig.data.noPushKey);
     }
     private static KeyBinding register(String id,int key) {
         return KeyBindingHelper.registerKeyBinding(new KeyBinding(id,InputUtil.Type.KEYSYM,key,"category.bk.client"));
