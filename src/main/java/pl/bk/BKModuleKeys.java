@@ -5,18 +5,18 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
 public final class BKModuleKeys {
-    public static KeyBinding openGui,noPush;
+    public static KeyBinding openGui,airFreeze;
     private BKModuleKeys() {}
     public static void register() {
         openGui=register("key.bk.open_gui",BKConfig.data.guiKey);
-        noPush=register("key.bk.air_freeze",BKConfig.data.noPushKey);
+        airFreeze=register("key.bk.air_freeze",BKConfig.data.airFreezeKey);
     }
     private static KeyBinding register(String id,int key) {
         return KeyBindingHelper.registerKeyBinding(new KeyBinding(id,InputUtil.Type.KEYSYM,key,"category.bk.client"));
     }
-    public static void setNoPushBind(int code) {
-        BKConfig.data.noPushKey=code;
-        noPush.setBoundKey(InputUtil.fromKeyCode(code,0));
+    public static void setAirFreezeBind(int code) {
+        BKConfig.data.airFreezeKey=code;
+        airFreeze.setBoundKey(InputUtil.fromKeyCode(code,0));
         KeyBinding.updateKeysByCode();
         BKConfig.save();
     }
