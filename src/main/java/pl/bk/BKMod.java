@@ -13,6 +13,7 @@ public final class BKMod implements ClientModInitializer {
     private static void tick(MinecraftClient client) {
         if(BKModuleKeys.openGui.wasPressed() && client.currentScreen==null) client.setScreen(new BKClickGui());
         while(BKModuleKeys.noPush.wasPressed()) toggleAirFreeze();
+        BKDripstone.tick(client);
     }
     public static void toggleAirFreeze() {
         BKConfig.data.noPush=!BKConfig.data.noPush;
