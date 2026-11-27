@@ -6,9 +6,12 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.Text;
 
+import java.util.Locale;
+
 public final class BKClickGui extends Screen {
-    private static final int W=410,H=270;
+    private static final int W=410,H=350;
     private boolean waitingForBind=false;
+    private static final String[] TRACER_COLORS={"Biały","Czerwony","Zielony","Niebieski","Fioletowy"};
     public BKClickGui() { super(Text.literal("BK Client")); }
 
     @Override protected void init() {
@@ -23,6 +26,13 @@ public final class BKClickGui extends Screen {
         addToggle(x,y+126,"Blokuj push od graczy",()->BKConfig.data.noPushEntities,v->BKConfig.data.noPushEntities=v);
         addToggle(x,y+160,"Blokuj push od płynów",()->BKConfig.data.noPushFluids,v->BKConfig.data.noPushFluids=v);
         addToggle(x,y+194,"Blokuj wypychanie z bloków",()->BKConfig.data.noPushBlocks,v->BKConfig.data.noPushBlocks=v);
+        addToggle(x,y+230,"Tracery — wszyscy gracze",()->BKConfig.data.tracersEnabled,v->BKConfig.data.tracersEnabled=v);
+        addDrawableChild(button(x+12,y+264,386,26,"Kolor tracerów: "+TRACER_COLORS[BKConfig.data.tracerColor],b->{
+            BKConfig.data.tracerColor=(BKConfig.data.tracerColor+1)%TRACER_COLORS.length; BKConfig.save(); clearAndInit();
+        }));
+        addDrawableChild(button(x+12,y+298,386,26,"Grubość tracerów: "+String.format(Locale.ROOT,"%.1f",BKConfig.data.tracerThickness),b->{
+            BKConfig.data.tracerThickness=BKConfig.data.tracerThickness>=5.0f?1.0f:Math.min(5.0f,BKConfig.data.tracerThickness+0.5f); BKConfig.save(); clearAndInit();
+        }));
     }
     private void addToggle(int x,int y,String label,java.util.function.BooleanSupplier get,java.util.function.Consumer<Boolean> set) {
         addDrawableChild(button(x+12,y,386,26,label+": "+(get.getAsBoolean()?"WŁ.":"WYŁ."),b->{set.accept(!get.getAsBoolean());BKConfig.save();clearAndInit();}));
