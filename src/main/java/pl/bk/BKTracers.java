@@ -12,6 +12,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 /** Lekkie tracery 2D: jedna projekcja i jeden batch GPU na klatke HUD. */
@@ -19,6 +20,7 @@ public final class BKTracers {
     private static final float NEAR=0.05f;
     private static final Matrix4f VP=new Matrix4f();
     private static Vec3d camera=Vec3d.ZERO;
+    private static final Quaternionf inverseCameraRotation=new Quaternionf();
     private static boolean valid;
 
     private static final int[] COLORS={
@@ -30,7 +32,8 @@ public final class BKTracers {
     public static void capture(WorldRenderContext context) {
         Camera c=context.camera();
         camera=c.getPos();
-        Matrix4f view=new Matrix4f().rotation(c.getRotation().conjugate(new Quaternionf()));
+        inverseCameraRotation.set(c.getRotation()).conjugate();
+        Matrix4f view=new Matrix4f().rotation(inverseCameraRotation);
         new Matrix4f(context.projectionMatrix()).mul(view,VP);
         valid=true;
     }
@@ -60,16 +63,26 @@ public final class BKTracers {
                     (float)(targetY-camera.y),
                     (float)(pos.z-camera.z),1.0f);
             VP.transform(point);
-            // Nie odrzucaj graczy za kamera: ich projekcja wskazuje krawedz ekranu.
-            float w=point.w;
-            if(Math.abs(w)<NEAR) w=(w<0.0f ? -NEAR : NEAR);
-            float x2=(point.x/w*0.5f+0.5f)*sw;
-            float y2=(1.0f-(point.y/w*0.5f+0.5f))*sh;
-            if(!Float.isFinite(x2) || !Float.isFinite(y2)) continue;
+            // Współrzędne względem kamery pozwalają wykryć graczy za plecami.
+            Vec3d relative=pos.add(0.0,player.getHeight()*0.55,0.0).subtract(camera);
+            Vector3f cameraSpace=new Vector3f((float)relative.x,(float)relative.y,(float)relative.z);
+            inverseCameraRotation.transform(cameraSpace);
 
-            // Początek linii jest w celowniku, a koniec ograniczony do obszaru ekranu.
+            // Początek linii jest w celowniku; gracz za kamerą dostaje kierunek na krawędź.
             float x1=sw*0.5f, y1=sh*0.5f;
-            float dx=x2-x1, dy=y2-y1;
+            float dx,dy;
+            if(cameraSpace.z>0.0f) {
+                dx=cameraSpace.x;
+                dy=-cameraSpace.y;
+                if(Math.abs(dx)+Math.abs(dy)<0.001f) { dx=0.0f; dy=1.0f; }
+            } else {
+                float w=Math.max(NEAR,point.w);
+                float x2=(point.x/w*0.5f+0.5f)*sw;
+                float y2=(1.0f-(point.y/w*0.5f+0.5f))*sh;
+                if(!Float.isFinite(x2) || !Float.isFinite(y2)) continue;
+                dx=x2-x1;
+                dy=y2-y1;
+            }
             float len=(float)Math.sqrt(dx*dx+dy*dy);
             if(len<0.5f) {
                 // Gracz dokladnie za kamera: pokaz wskaznik na dolnej krawedzi.
