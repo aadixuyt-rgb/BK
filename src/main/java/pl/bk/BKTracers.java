@@ -71,14 +71,15 @@ public final class BKTracers {
             // Początek linii jest w celowniku; gracz za kamerą dostaje kierunek na krawędź.
             float x1=sw*0.5f, y1=sh*0.5f;
             float dx,dy;
+            float x2,y2;
             if(cameraSpace.z>0.0f) {
                 dx=cameraSpace.x;
                 dy=-cameraSpace.y;
                 if(Math.abs(dx)+Math.abs(dy)<0.001f) { dx=0.0f; dy=1.0f; }
             } else {
                 float w=Math.max(NEAR,point.w);
-                float x2=(point.x/w*0.5f+0.5f)*sw;
-                float y2=(1.0f-(point.y/w*0.5f+0.5f))*sh;
+                x2=(point.x/w*0.5f+0.5f)*sw;
+                y2=(1.0f-(point.y/w*0.5f+0.5f))*sh;
                 if(!Float.isFinite(x2) || !Float.isFinite(y2)) continue;
                 dx=x2-x1;
                 dy=y2-y1;
