@@ -6,6 +6,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.util.math.Vec3d;
@@ -18,7 +19,6 @@ public final class BKTracers {
     private static final float NEAR=0.05f;
     private static final Matrix4f VP=new Matrix4f();
     private static Vec3d camera=Vec3d.ZERO;
-    private static float partialTick;
     private static boolean valid;
 
     private static final int[] COLORS={
@@ -32,15 +32,15 @@ public final class BKTracers {
         camera=c.getPos();
         Matrix4f view=new Matrix4f().rotation(c.getRotation().conjugate(new Quaternionf()));
         new Matrix4f(context.projectionMatrix()).mul(view,VP);
-        partialTick=context.tickCounter().getTickDelta(false);
         valid=true;
     }
 
-    public static void render(DrawContext draw) {
+    public static void render(DrawContext draw, RenderTickCounter tickCounter) {
         MinecraftClient mc=MinecraftClient.getInstance();
         if(!BKConfig.data.tracersEnabled || !valid || mc.player==null || mc.world==null
                 || mc.options.hudHidden || mc.currentScreen!=null) return;
 
+        float partialTick=tickCounter.getTickDelta(false);
         int sw=mc.getWindow().getScaledWidth(), sh=mc.getWindow().getScaledHeight();
         int color=COLORS[Math.max(0,Math.min(COLORS.length-1,BKConfig.data.tracerColor))];
         float width=Math.max(1.0f,Math.min(5.0f,BKConfig.data.tracerThickness));
@@ -66,8 +66,8 @@ public final class BKTracers {
             float y2=(1.0f-(point.y/point.w*0.5f+0.5f))*sh;
             if(!Float.isFinite(x2) || !Float.isFinite(y2)) continue;
 
-            // Tracer wychodzi ze srodka dolnej krawedzi HUD i konczy sie przy graczu.
-            float x1=sw*0.5f, y1=sh-2.0f;
+            // Tracer wychodzi dokladnie ze srodka ekranu (celownika).
+            float x1=sw*0.5f, y1=sh*0.5f;
             float dx=x2-x1, dy=y2-y1;
             float len=(float)Math.sqrt(dx*dx+dy*dy);
             if(len<0.5f) continue;
