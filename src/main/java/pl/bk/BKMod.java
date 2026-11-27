@@ -11,7 +11,7 @@ public final class BKMod implements ClientModInitializer {
         BKConfig.load();
         BKModuleKeys.register();
         WorldRenderEvents.END.register(BKTracers::capture);
-        HudRenderCallback.EVENT.register((context, tickCounter) -> BKTracers.render(context));
+        HudRenderCallback.EVENT.register((context, tickCounter) -> BKTracers.render(context, tickCounter));
         ClientTickEvents.END_CLIENT_TICK.register(BKMod::tick);
     }
     private static void tick(MinecraftClient client) {
