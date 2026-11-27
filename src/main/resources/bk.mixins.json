@@ -3,6 +3,13 @@
   "minVersion": "0.8",
   "package": "pl.bk.mixin",
   "compatibilityLevel": "JAVA_21",
-  "client": ["LivingEntityMixin", "PlayerEntityMixin", "ClientPlayerEntityMixin"],
-  "injectors": { "defaultRequire": 1 }
+  "client": [
+    "LivingEntityMixin",
+    "PlayerEntityMixin",
+    "ClientPlayerEntityMixin",
+    "FireballCooldownMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }
